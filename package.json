@@ -1,0 +1,16 @@
+{
+  "name": "e2e-testing",
+  "version": "1.0.0",
+  "description": "playwright e2e-testing",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:report": "playwright show-report"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.46.1",
+    "@types/node": "^22.5.1"
+  }
+}
