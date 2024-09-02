@@ -52,18 +52,31 @@ describe('Blog app', () => {
     })
   })
 
-  describe('a blog can have', () => {
+  describe('a blog can', () => {
     beforeEach(async ({page}) => {
       await loginWith(page, 'root', 'root')
       await createBlog(page, 'test-blog', 'test-author', 'www.newblog.com')
     })
 
-    test('likes increased', async ({ page }) => {
+    test('have likes increased', async ({ page }) => {
       await expect(page.getByText('test-blog test-author')).toBeVisible()
       await page.getByRole('button', { name: 'view' }).click()
       await expect(page.getByText('0')).toBeVisible()
       await page.getByRole('button', { name: 'like' }).click()
       await expect(page.getByText('1')).toBeVisible()
     })
+
+    test('be deleted', async ({page}) => {
+      await expect(page.getByText('test-blog test-author')).toBeVisible()
+      await page.getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'remove' }).click()
+      page.on('dialog', async dialog => {
+        console.log(dialog.message('Remove blog test-blog by test-author?'));
+        await dialog.accept();
+      });
+      
+      await expect(page.getByText('test-blog test-author')).not.toBeVisible()
+    })
+    
   })
 })
