@@ -13,6 +13,14 @@ describe('Blog app', () => {
       }
     })
 
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'testUser',
+        username: 'test',
+        password: 'test'
+      }
+    })
+
     await page.goto('http://localhost:5173')
   })
 
@@ -74,9 +82,25 @@ describe('Blog app', () => {
         console.log(dialog.message('Remove blog test-blog by test-author?'));
         await dialog.accept();
       });
-      
+
       await expect(page.getByText('test-blog test-author')).not.toBeVisible()
     })
     
+  })
+
+  describe('only blog creator', async () => {
+    beforeEach(async ({page}) => {
+      await loginWith(page, 'test', 'test')
+      await createBlog(page, 'test-blog-2', 'test-author-2', 'www.newblog2.com')
+      await page.getByRole('button', { name: 'logout' }).click()
+    })
+
+    test('can see remove button', async ({ page }) => {
+      await loginWith(page, 'root', 'root')
+      await expect(page.getByText('test-blog-2 test-author-2')).toBeVisible()
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByRole('button', { name: 'remove'})).not.toBeVisible()
+    })
+
   })
 })
