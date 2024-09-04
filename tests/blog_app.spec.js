@@ -113,19 +113,21 @@ describe('Blog app', () => {
     })
 
     test('according to the likes', async ({page}) => {
-      await page.getByText('most-liked 1st-author').getByRole('button', { name: 'view' }).click()
+      const blogList = await page.getByTestId('blogs').all()
+
+      await blogList[0].getByText('most-liked 1st-author').getByRole('button', { name: 'view' }).click()
       await page.getByRole('button', { name: 'like' }).nth(0).click()
       await page.getByRole('button', { name: 'like' }).nth(0).click()
       await page.getByRole('button', { name: 'like' }).nth(0).click()
-      await page.getByText('2nd-most-liked 2nd-author').getByRole('button', { name: 'view' }).click()
+      await blogList[1].getByText('2nd-most-liked 2nd-author').getByRole('button', { name: 'view' }).click()
       await page.getByRole('button', { name: 'like' }).nth(1).click()
       await page.getByRole('button', { name: 'like' }).nth(1).click()
-      await page.getByText('3rd-most-liked 3rd-author').getByRole('button', { name: 'view' }).click()
+      await blogList[2].getByText('3rd-most-liked 3rd-author').getByRole('button', { name: 'view' }).click()
       await page.getByRole('button', { name: 'like' }).nth(2).click()
       
-      await expect(page.locator('.blog').nth(0).getByText('most-liked 1st-author')).toBeVisible()
-      await expect(page.locator('.blog').nth(1).getByText('2nd-most-liked 2nd-author')).toBeVisible()
-      await expect(page.locator('.blog').nth(2).getByText('3rd-most-liked 3rd-author')).toBeVisible()
+      await expect(blogList[0].getByText('3')).toBeVisible()
+      await expect(blogList[1].getByText('2')).toBeVisible()
+      await expect(blogList[2].getByText('1')).toBeVisible().waitFor()
     })
   })
 })
