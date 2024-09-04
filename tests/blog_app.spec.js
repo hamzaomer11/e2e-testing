@@ -127,7 +127,7 @@ describe('Blog app', () => {
       
       await expect(blogList[0].getByText('3')).toBeVisible()
       await expect(blogList[1].getByText('2')).toBeVisible()
-      await expect(blogList[2].getByText('1')).toBeVisible().waitFor()
+      await expect(blogList[2].getByText('1')).toBeVisible()
     })
   })
 })
