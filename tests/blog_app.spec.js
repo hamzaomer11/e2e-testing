@@ -101,6 +101,32 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'view' }).click()
       await expect(page.getByRole('button', { name: 'remove'})).not.toBeVisible()
     })
+  })
 
+  describe('blogs are arranged in the order', async () => {
+    beforeEach(async ({page}) => {
+      await loginWith(page, 'root', 'root')
+      await createBlog(page, 'most-liked', '1st-author', 'www.bloglikes.com')
+      await createBlog(page, '2nd-most-liked', '2nd-author', 'www.bloglikes2.com')
+      await createBlog(page, '3rd-most-liked', '3rd-author', 'www.bloglikes3.com')
+      await page.getByText('3rd-most-liked 3rd-author').waitFor()
+    })
+
+    test('according to the likes', async ({page}) => {
+      await page.getByText('most-liked 1st-author').getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'like' }).nth(0).click()
+      await page.getByRole('button', { name: 'like' }).nth(0).click()
+      await page.getByRole('button', { name: 'like' }).nth(0).click()
+      await page.getByText('2nd-most-liked 2nd-author').getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'like' }).nth(1).click()
+      await page.getByRole('button', { name: 'like' }).nth(1).click()
+      await page.getByText('3rd-most-liked 3rd-author').getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'like' }).nth(2).click()
+      
+      await expect(page.locator('.blog').nth(0).getByText('most-liked 1st-author')).toBeVisible()
+      await expect(page.locator('.blog').nth(1).getByText('2nd-most-liked 2nd-author')).toBeVisible()
+      await expect(page.locator('.blog').nth(2).getByText('3rd-most-liked 3rd-author')).toBeVisible()
+    })
   })
 })
+
