@@ -113,21 +113,22 @@ describe('Blog app', () => {
     })
 
     test('according to the likes', async ({page}) => {
-      const blogList = await page.getByTestId('blogs').all()
+      const startBlogList = await page.getByTestId('blogs').all()
 
-      await blogList[0].getByText('most-liked 1st-author').getByRole('button', { name: 'view' }).click()
+      await startBlogList[0].getByText('most-liked 1st-author').getByRole('button', { name: 'view' }).click()
       await page.getByRole('button', { name: 'like' }).nth(0).click()
       await page.getByRole('button', { name: 'like' }).nth(0).click()
       await page.getByRole('button', { name: 'like' }).nth(0).click()
-      await blogList[1].getByText('2nd-most-liked 2nd-author').getByRole('button', { name: 'view' }).click()
+      await startBlogList[1].getByText('2nd-most-liked 2nd-author').getByRole('button', { name: 'view' }).click()
       await page.getByRole('button', { name: 'like' }).nth(1).click()
       await page.getByRole('button', { name: 'like' }).nth(1).click()
-      await blogList[2].getByText('3rd-most-liked 3rd-author').getByRole('button', { name: 'view' }).click()
-      await page.getByRole('button', { name: 'like' }).nth(2).click()
-      
-      await expect(blogList[0].getByText('3')).toBeVisible()
-      await expect(blogList[1].getByText('2')).toBeVisible()
-      await expect(blogList[2].getByText('1')).toBeVisible({timeout: 10000})
+      await startBlogList[2].getByText('3rd-most-liked 3rd-author').getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'like' }).nth(2).click()      
+
+      const endBlogList = await page.getByTestId('blogs').all()
+      await expect(endBlogList[0].locator('..').filter({hasText: '3'})).toBeVisible()
+      await expect(endBlogList[1].locator('..').filter({hasText: '2'})).toBeVisible()
+      await expect(endBlogList[2].locator('..').filter({hasText: '1'})).toBeVisible()
     })
   })
 })
